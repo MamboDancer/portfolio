@@ -160,11 +160,47 @@
     }
 
     /* The "dev." logo/link on the left */
+    /*
+      NAV LOGO — now contains a photo + name instead of "dev."
+      flex row to align the avatar circle and text side by side.
+    */
     .nav-logo {
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       text-decoration: none;
+      color: var(--text);
+    }
+
+    /*
+      AVATAR — circular photo in the nav.
+      overflow: hidden clips the <img> to the circle shape.
+      The placeholder background shows while the image loads.
+    */
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    /* The actual photo — fills the circle, cropped from center */
+    .nav-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* Name text next to the avatar */
+    .nav-name {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1.2;
     }
 
     /* Nav link list — horizontal row on the right */
@@ -213,6 +249,64 @@
 
     /* Sits on top of the dot grid */
     .hero-inner { position: relative; z-index: 1; }
+
+    /*
+      HERO INTRO ROW
+      Photo on the left, name + title stacked on the right.
+      The photo is big here — this is the first thing people see.
+    */
+    .hero-intro {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s 0.05s ease both;
+    }
+
+    /*
+      HERO PHOTO — large circular portrait.
+      Same technique as the nav avatar but much bigger.
+      The teal ring on hover ties it to the accent color.
+    */
+    .hero-photo {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: border-color 0.3s;
+    }
+
+    .hero-photo:hover { border-color: var(--accent); }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* Name + title stacked vertically next to the photo */
+    .hero-identity { display: flex; flex-direction: column; gap: 4px; }
+
+    /* Full name — big and prominent */
+    .hero-name {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    /* "Software Developer" subtitle — teal so it reads as a label, not plain text */
+    .hero-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
 
     /*
       "OPEN TO OPPORTUNITIES" BADGE
@@ -627,7 +721,14 @@
   -->
   <header>
     <nav>
-      <a href="#hero" class="nav-logo">dev.</a>
+      <!-- Nav logo: avatar photo + full name. Photo file = photo.jpg (place next to index.html) -->
+      <a href="#hero" class="nav-logo">
+        <div class="nav-avatar">
+          <!-- Replace photo.jpg with your actual photo filename -->
+          <img src="public/photo.jpg" alt="Artem Ljukshin" />
+        </div>
+        <span class="nav-name">Artem Ljukshin</span>
+      </a>
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
@@ -652,8 +753,20 @@
           <!-- Pulsing availability pill — signals the person is looking for work -->
           <span class="hero-badge">Open to opportunities</span>
 
-          <!-- Big headline — two lines feel more dramatic than one -->
-          <h1>Software<br />Developer</h1>
+          <!--
+            HERO INTRO — photo + name + title all in one row.
+            Photo lives in the public/ folder so it's easy to swap out.
+          -->
+          <div class="hero-intro">
+            <div class="hero-photo">
+              <!-- Photo file: public/photo.jpg — put your image there -->
+              <img src="public/photo.jpg" alt="Artem Ljukshin" />
+            </div>
+            <div class="hero-identity">
+              <span class="hero-name">Artem Ljukshin</span>
+              <span class="hero-title">Software Developer</span>
+            </div>
+          </div>
 
           <!-- One-paragraph pitch — covers breadth and drops the social proof number -->
           <p class="hero-sub">
@@ -668,7 +781,6 @@
             <span class="chip">Python</span>
             <span class="chip">FastAPI</span>
             <span class="chip">Node.js</span>
-            <span class="chip">Vue</span>
             <span class="chip">Docker</span>
             <span class="chip">Unity / C#</span>
             <span class="chip">Arduino / ESP32</span>
@@ -693,7 +805,7 @@
           Strong foundations across multiple stacks — backend Python engineering,
           machine learning, full-stack web, Unity game dev, and embedded
           robotics. I design relational databases from scratch, write async
-          Python, ship Vue frontends, build Unity VR scenes, and program
+          Python, build Unity VR scenes, and program
           competition robots. Previously designed and taught three programming
           courses for children at the Robocode school network — Junior through
           Strong Middle level.
@@ -769,7 +881,6 @@
               <li class="sub-label">Frontend</li>
               <li>HTML, CSS, JavaScript</li>
               <li>TypeScript</li>
-              <li>Vue · Pinia / Vuex</li>
               <li>Responsive — Flexbox & Grid</li>
               <li>Figma (UI/UX basics)</li>
 
@@ -849,7 +960,6 @@
             <div class="proj-tags">
               <span class="proj-tag live">~1,000 active users</span>
               <span class="proj-tag">Node.js</span>
-              <span class="proj-tag">Vue</span>
               <span class="proj-tag">Express</span>
               <span class="proj-tag">JWT</span>
             </div>
