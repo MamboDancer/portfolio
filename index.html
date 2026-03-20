@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software Developer — Portfolio</title>
+
+  <!--
+    FONTS
+    Using Geist (sans) for headings and body text, Geist Mono for code-y
+    bits like chips and tags. Both from Google Fonts. Preconnect speeds
+    up the font load by opening the connection before the CSS request fires.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+
+    /*
+      DESIGN TOKENS
+      Everything visual lives here as CSS variables. Want to change the
+      accent color? One line. Want a lighter background? One line.
+      Nothing is hardcoded further down.
+    */
+    :root {
+      --bg:         #0c0d0f;                /* the near-black page background */
+      --surface:    #13151a;                /* slightly lighter — used for cards */
+      --border:     rgba(255,255,255,0.07); /* barely-there border, just enough to see */
+      --text:       #e8e4db;                /* warm off-white — easier on eyes than pure white */
+      --muted:      #6b6f7a;                /* gray for secondary text, labels, descriptions */
+      --accent:     #00e5c0;                /* electric teal — the one color that pops */
+      --accent-dim: rgba(0,229,192,0.12);   /* same teal but transparent, for badge fills */
+      --font:       'Geist', system-ui, sans-serif;
+      --font-mono:  'Geist Mono', monospace; /* for chips, tags, project numbers */
+      --radius:     6px;                    /* corner radius used everywhere */
+      --max-w:      880px;                  /* page max-width — keeps content readable */
+    }
+
+    /*
+      RESET
+      Kill default margin/padding so we can control spacing ourselves.
+      Box-sizing: border-box means padding doesn't blow out element widths.
+      scroll-behavior: smooth makes anchor links animate instead of jump.
+    */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /*
+      BODY
+      Dark background, warm text, Geist font.
+      antialiased makes text render crisper on Mac/retina screens.
+    */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /*
+      CONTAINER
+      Centers content and caps width so lines don't get too long to read.
+      Horizontal padding keeps content off screen edges on mobile.
+    */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /*
+      SECTION SPACING
+      Every section gets the same generous vertical padding.
+      The + selector adds a divider line only between sections, not above the first.
+    */
+    section { padding: 5rem 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+
+    /* =====================================================================
+       TYPOGRAPHY
+       ===================================================================== */
+
+    /*
+      LABEL — the small uppercase text above section headings.
+      Like "SKILLS" or "PROJECTS". Written in teal so it reads as a marker,
+      not part of the heading itself.
+    */
+    .label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    /*
+      H1 — the big hero headline.
+      clamp() makes it scale fluidly: never smaller than 2.6rem,
+      never bigger than 4.5rem, scales with viewport in between.
+      The animation is defined further down.
+    */
+    h1 {
+      font-size: clamp(2.6rem, 7vw, 4.5rem);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em; /* slight negative tracking looks better at large sizes */
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    /* H2 — section headings. Smaller than h1, still prominent. */
+    h2 {
+      font-size: 1.9rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Default paragraph style — muted gray, comfortable line height */
+    p { color: var(--muted); line-height: 1.8; }
+
+    /* Inline teal highlight — used for the "~1,000 active users" callout in hero */
+    .hi { color: var(--accent); }
+
+
+    /* =====================================================================
+       HEADER / NAV
+       Fixed to top so it stays visible while scrolling.
+       Frosted glass effect: semi-transparent bg + blur behind it.
+       ===================================================================== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100; /* sits above everything else */
+      background: rgba(12,13,15,0.88);
+      backdrop-filter: blur(12px); /* the frosted glass blur */
+      border-bottom: 1px solid var(--border);
+    }
+
+    /*
+      NAV inner — constrained to same max-width as content,
+      so the nav links line up with the page content below.
+    */
+    nav {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* The "dev." logo/link on the left */
+    .nav-logo {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    /* Nav link list — horizontal row on the right */
+    .nav-links { display: flex; gap: 1.75rem; list-style: none; }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s; /* smooth color change on hover */
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+
+    /* =====================================================================
+       HERO SECTION
+       The first thing people see. Tall, spacious, animated.
+       ===================================================================== */
+
+    /*
+      Extra top padding to clear the fixed nav (52px) plus breathing room.
+      border-top: none because we don't want a divider above the very first section.
+    */
+    #hero {
+      padding-top: calc(52px + 7rem);
+      padding-bottom: 7rem;
+      border-top: none;
+    }
+
+    /*
+      DOT GRID BACKGROUND
+      Pure CSS — no image file needed. A radial gradient repeated as a pattern
+      creates subtle dots. position: fixed makes it stay put while scrolling,
+      giving a nice parallax feel. pointer-events: none so it doesn't block clicks.
+    */
+    #hero::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Sits on top of the dot grid */
+    .hero-inner { position: relative; z-index: 1; }
+
+    /*
+      "OPEN TO OPPORTUNITIES" BADGE
+      Little pill at the top of the hero. Has a pulsing dot to
+      signal availability. Uses a ::before pseudo-element for the dot.
+    */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 100px; /* fully rounded pill shape */
+      padding: 4px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.5s ease both; /* fades in first, before the headline */
+    }
+
+    /* The little pulsing green dot — made entirely with CSS */
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent); /* soft glow around the dot */
+      animation: pulse 2s infinite;
+    }
+
+    /* The pulse animation — gently fades in and out */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+
+    /* Tagline paragraph under the big headline */
+    .hero-sub {
+      font-size: 15px;
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s 0.2s ease both; /* delayed slightly after h1 */
+    }
+
+    /*
+      TECH STACK CHIPS
+      The row of technology tags at the bottom of the hero.
+      flex-wrap: wrap means they flow to a new line on narrow screens.
+    */
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      animation: fadeUp 0.6s 0.3s ease both; /* last thing to animate in */
+    }
+
+    /* Individual chip — uses monospace font to feel code-like */
+    .chip {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3px 11px;
+      color: var(--muted);
+      background: var(--surface);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    /* Hovering a chip highlights it in teal */
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    /*
+      FADE-UP ANIMATION
+      Used on hero elements so they gracefully appear on page load.
+      "both" fill mode means the element starts invisible and stays
+      in the end state after the animation completes.
+    */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+
+    /* =====================================================================
+       ABOUT SECTION
+       Just a paragraph — constrained width for readability.
+       ===================================================================== */
+    #about p { max-width: 640px; font-size: 15px; }
+
+
+    /* =====================================================================
+       SKILLS GRID
+       Responsive grid of cards — one per technology stack.
+       auto-fit + minmax means columns add/drop automatically based on space.
+       ===================================================================== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    /* Each skill card — dark surface, subtle border, hover accent */
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    /* On hover the border gets a teal tint to signal interactivity */
+    .skill-card:hover { border-color: rgba(0,229,192,0.3); }
+
+    /*
+      CARD HEADER ROW
+      Contains the card title and optionally a level badge (e.g. "beginner").
+      A thin border below separates it from the skill list.
+    */
+    .skill-card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skill-card-head h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /*
+      LEVEL BADGE
+      Appears next to the card title for stacks where experience level
+      matters (e.g. ML/AI is marked "beginner" to be honest about it).
+    */
+    .level-badge {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: 100px;
+      border: 1px solid rgba(0,229,192,0.3);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /*
+      SKILL LIST
+      Vertical list of bullet points inside each card.
+      Uses a CSS-generated teal arrow (›) instead of a real bullet.
+    */
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .skill-list li {
+      font-size: 12.5px;
+      color: var(--muted);
+      padding-left: 1rem; /* room for the arrow */
+      position: relative;
+    }
+
+    /* The teal › arrow — positioned absolutely to the left of each item */
+    .skill-list li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /*
+      SUB-LABEL
+      A tiny uppercase label inside the list that groups related items
+      (e.g. "Core", "Backend", "Hardware"). No bullet, slightly indented.
+    */
+    .skill-list .sub-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(107,111,122,0.5);
+      padding-left: 0;
+      margin-top: 0.5rem;
+    }
+
+    /* Sub-labels don't get the arrow bullet */
+    .skill-list .sub-label::before { content: none; }
+
+
+    /* =====================================================================
+       PROJECTS GRID
+       Same auto-fit pattern as skills. Cards lift slightly on hover.
+       ===================================================================== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    /*
+      PROJECT CARD
+      flex column so the description stretches and pushes tags to the bottom,
+      keeping all cards the same height in a row.
+    */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    /* Subtle lift + teal border on hover — feels interactive without being loud */
+    .project-card:hover {
+      border-color: rgba(0,229,192,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* The "01", "02" etc. number — monospace, dim teal */
+    .proj-num {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      opacity: 0.6;
+    }
+
+    .project-card h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* flex: 1 makes the description grow to fill space, aligning tags at bottom */
+    .project-card p { font-size: 12.5px; flex: 1; }
+
+    /* The tag row at the bottom of each project card */
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    /* Default tag — dark border, muted text */
+    .proj-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /*
+      LIVE / COMPETITION TAG
+      Highlighted variant — teal border and fill.
+      Used for "~1,000 active users" and "Competition" tags
+      to draw attention to the most impressive detail.
+    */
+    .proj-tag.live {
+      border-color: rgba(0,229,192,0.35);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+
+    /* =====================================================================
+       EDUCATION CARD
+       A single wide card with a 2-column layout: info on the left,
+       a big "3" stat number on the right.
+       ===================================================================== */
+    .edu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 2rem;
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: 1fr auto; /* left takes remaining space, right is sized by content */
+      gap: 1rem 2rem;
+      align-items: start;
+    }
+
+    .edu-card h3 {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    /* Organization name — teal and small, like a subtitle */
+    .edu-org { font-size: 12px; color: var(--accent); margin-bottom: 1rem; }
+
+    /* Description paragraph inside the edu card */
+    .edu-desc { font-size: 13px; max-width: 480px; margin-bottom: 1rem; }
+
+    /* The three course levels listed with teal dots */
+    .edu-levels { display: flex; flex-direction: column; gap: 6px; }
+
+    .edu-level {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Small teal dot before each level — CSS-only, no image */
+    .edu-level::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.45;
+      flex-shrink: 0; /* don't let it shrink if text wraps */
+    }
+
+    /*
+      STAT SIDEBAR
+      The big "3" on the right side of the education card.
+      Right-aligned to create a nice visual contrast with the left column.
+    */
+    .edu-stat { text-align: right; }
+
+    .stat-num {
+      font-size: 3.5rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -0.03em; /* tighten spacing at large sizes */
+    }
+
+    .stat-label { font-size: 11px; color: var(--muted); }
+
+
+    /* =====================================================================
+       ADDITIONAL SKILLS
+       Simple grid of items with a left accent border.
+       The border turns teal on hover to feel interactive.
+       ===================================================================== */
+    .additional-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .add-item {
+      border-left: 2px solid var(--border);
+      padding-left: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    /* Accent the left border when hovering over an item */
+    .add-item:hover { border-color: var(--accent); }
+
+    .add-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+    .add-body  { font-size: 12px; }
+
+
+    /* =====================================================================
+       FOOTER
+       Simple bar at the bottom. Nothing fancy.
+       ===================================================================== */
+    footer { border-top: 1px solid var(--border); padding: 2rem 0; }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer p { font-size: 12px; }
+
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+
+    .footer-links a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+
+    /* =====================================================================
+       RESPONSIVE
+       On small screens: hide nav links (too cramped), collapse the
+       education card to a single column, left-align the stat number.
+       ===================================================================== */
+    @media (max-width: 580px) {
+      .nav-links { display: none; }
+      .edu-card  { grid-template-columns: 1fr; }
+      .edu-stat  { text-align: left; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!--
+    NAV
+    Fixed to the top. The logo links back to the hero, the links
+    jump to each section via smooth scroll (set on <html> above).
+  -->
+  <header>
+    <nav>
+      <a href="#hero" class="nav-logo">dev.</a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#additional">More</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!--
+      HERO
+      First impression. Three staggered animations bring in the badge,
+      headline, tagline, and chips one after another so nothing lands flat.
+    -->
+    <section id="hero">
+      <div class="container">
+        <div class="hero-inner">
+
+          <!-- Pulsing availability pill — signals the person is looking for work -->
+          <span class="hero-badge">Open to opportunities</span>
+
+          <!-- Big headline — two lines feel more dramatic than one -->
+          <h1>Software<br />Developer</h1>
+
+          <!-- One-paragraph pitch — covers breadth and drops the social proof number -->
+          <p class="hero-sub">
+            Python · Full-Stack Web · Game Dev · Embedded · ML/AI · Education.<br />
+            Building real products used by real people — from a banking platform
+            with <span class="hi">~1,000 active users</span> to competition
+            robots and ML classifiers.
+          </p>
+
+          <!-- Quick-scan tech stack — monospace chips so they look code-adjacent -->
+          <div class="hero-chips">
+            <span class="chip">Python</span>
+            <span class="chip">FastAPI</span>
+            <span class="chip">Node.js</span>
+            <span class="chip">Vue</span>
+            <span class="chip">Docker</span>
+            <span class="chip">Unity / C#</span>
+            <span class="chip">Arduino / ESP32</span>
+            <span class="chip">ML / DL</span>
+            <span class="chip">Git</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!--
+      ABOUT
+      Short bio in plain language. No bullet points — just a paragraph
+      that reads like a human wrote it, because they did.
+    -->
+    <section id="about">
+      <div class="container">
+        <span class="label">About</span>
+        <h2>Versatile developer,<br />thorough by habit</h2>
+        <p>
+          Strong foundations across multiple stacks — backend Python engineering,
+          machine learning, full-stack web, Unity game dev, and embedded
+          robotics. I design relational databases from scratch, write async
+          Python, ship Vue frontends, build Unity VR scenes, and program
+          competition robots. Previously designed and taught three programming
+          courses for children at the Robocode school network — Junior through
+          Strong Middle level.
+        </p>
+      </div>
+    </section>
+
+    <!--
+      SKILLS
+      One card per major technology area. Each card has a header, optional
+      level badge, and a bulleted list grouped by sub-category.
+      The grid reflows automatically based on available width.
+    -->
+    <section id="skills">
+      <div class="container">
+        <span class="label">Skills</span>
+        <h2>Technology stack</h2>
+
+        <div class="skills-grid">
+
+          <!-- PYTHON CARD — the biggest one, split into Core and Backend -->
+          <article class="skill-card">
+            <div class="skill-card-head"><h3>Python</h3></div>
+            <ul class="skill-list">
+              <li class="sub-label">Core</li>
+              <li>OOP, multithreading, asyncio</li>
+              <li>Concurrent patterns</li>
+              <li>Algorithms & data structures</li>
+              <li>Regex, venv, JSON / YAML</li>
+              <li>Testing — pytest, unittest</li>
+              <li>Files, CSV, Excel (pandas)</li>
+              <li>Jupyter Notebook</li>
+
+              <li class="sub-label">Backend & DevOps</li>
+              <li>FastAPI</li>
+              <li>MySQL — relational DB design</li>
+              <li>SQL (JOIN, indexes, transactions)</li>
+              <li>SQLAlchemy ORM</li>
+              <li>REST API / HTTP</li>
+              <li>WebSockets / real-time</li>
+              <li>Docker & Docker Compose</li>
+              <li>CI/CD — GitHub Actions</li>
+              <li>Linux / bash</li>
+              <li>Git, .env configs</li>
+              <li>npm / pip</li>
+            </ul>
+          </article>
+
+          <!-- ML / AI CARD — honest "beginner" badge so expectations are set correctly -->
+          <article class="skill-card">
+            <div class="skill-card-head">
+              <h3>ML / AI</h3>
+              <!-- Being upfront about the level is more trustworthy than saying nothing -->
+              <span class="level-badge">beginner</span>
+            </div>
+            <ul class="skill-list">
+              <li>Machine Learning & Deep Learning</li>
+              <li>NumPy, Pandas, scikit-learn</li>
+              <li>TensorFlow / PyTorch</li>
+              <li>OpenCV — computer vision</li>
+              <li>Matplotlib / Seaborn</li>
+              <li>Data Science pipelines</li>
+              <li>Web scraping</li>
+              <li>Data visualization</li>
+              <li>PyQt6 — desktop apps</li>
+            </ul>
+          </article>
+
+          <!-- FULL-STACK WEB CARD — split into frontend and backend sub-groups -->
+          <article class="skill-card">
+            <div class="skill-card-head"><h3>Full-stack Web</h3></div>
+            <ul class="skill-list">
+              <li class="sub-label">Frontend</li>
+              <li>HTML, CSS, JavaScript</li>
+              <li>TypeScript</li>
+              <li>Vue · Pinia / Vuex</li>
+              <li>Responsive — Flexbox & Grid</li>
+              <li>Figma (UI/UX basics)</li>
+
+              <li class="sub-label">Backend</li>
+              <li>Node.js · Express</li>
+              <li>JWT / OAuth — auth</li>
+              <li>CORS, middleware, cookies</li>
+              <li>WebSockets / real-time</li>
+            </ul>
+          </article>
+
+          <!-- GAME DEV CARD — Unity + C#, covers 2D/3D/VR -->
+          <article class="skill-card">
+            <div class="skill-card-head"><h3>Game Dev</h3></div>
+            <ul class="skill-list">
+              <li>Unity · C#</li>
+              <li>2D, 3D and VR projects</li>
+              <li>Physics engine</li>
+              <li>Animator & animation system</li>
+              <li>Scene management & scripting</li>
+              <li>Build & publish — WebGL, Android</li>
+            </ul>
+          </article>
+
+          <!--
+            EMBEDDED & ROBOTICS CARD
+            The most unusual skill set here — hardware, firmware, and real
+            competition robots. Split into Stack / Hardware / Firmware groups.
+          -->
+          <article class="skill-card">
+            <div class="skill-card-head"><h3>Embedded & Robotics</h3></div>
+            <ul class="skill-list">
+              <li class="sub-label">Stack</li>
+              <li>Arduino · ESP32 · C++</li>
+
+              <li class="sub-label">Hardware</li>
+              <li>Schematic design — motors, sensors, power</li>
+              <li>Motor drivers — L298N / L293D</li>
+              <li>IR, ultrasonic & distance sensors</li>
+              <li>90% of commercially available Arduino sensors</li>
+              <li>Servo motors</li>
+              <li>LiPo batteries, voltage regulators</li>
+
+              <li class="sub-label">Firmware</li>
+              <li>C++ for Arduino & ESP32</li>
+              <li>Interrupt handling</li>
+              <li>UART · I2C · SPI</li>
+              <li>PID controller</li>
+              <li>Wi-Fi / Bluetooth (ESP32)</li>
+              <li>GPIO · ADC · DAC</li>
+              <li>Chassis design & weight distribution</li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!--
+      PROJECTS
+      Seven real projects, numbered for easy reference.
+      The "live" tag class highlights the most impressive detail on each card —
+      active user count for the banking app, competition status for the robots.
+    -->
+    <section id="projects">
+      <div class="container">
+        <span class="label">Projects</span>
+        <h2>Selected work</h2>
+
+        <div class="projects-grid">
+
+          <!-- 01 — The banking app. The strongest card: real users, real product. -->
+          <article class="project-card">
+            <span class="proj-num">01</span>
+            <h3>Student Banking Platform</h3>
+            <p>Non-commercial full-stack web app for Robocode school students. Full product lifecycle — architecture, development, deployment.</p>
+            <div class="proj-tags">
+              <span class="proj-tag live">~1,000 active users</span>
+              <span class="proj-tag">Node.js</span>
+              <span class="proj-tag">Vue</span>
+              <span class="proj-tag">Express</span>
+              <span class="proj-tag">JWT</span>
+            </div>
+          </article>
+
+          <!-- 02 — Real-time ML with a webcam. Visually impressive to explain. -->
+          <article class="project-card">
+            <span class="proj-num">02</span>
+            <h3>LEGO Real-time Classifier</h3>
+            <p>Real-time image classification model that identifies LEGO pieces via webcam using computer vision and deep learning.</p>
+            <div class="proj-tags">
+              <span class="proj-tag">Python</span>
+              <span class="proj-tag">OpenCV</span>
+              <span class="proj-tag">TensorFlow / PyTorch</span>
+              <span class="proj-tag">ML / DL</span>
+            </div>
+          </article>
+
+          <!-- 03 — Data science / visualization project -->
+          <article class="project-card">
+            <span class="proj-num">03</span>
+            <h3>Data Analytics Dashboard</h3>
+            <p>Interactive data science dashboard with rich chart visualizations — analysis pipelines and charting libs in Python.</p>
+            <div class="proj-tags">
+              <span class="proj-tag">Python</span>
+              <span class="proj-tag">Pandas</span>
+              <span class="proj-tag">Matplotlib</span>
+              <span class="proj-tag">Seaborn</span>
+            </div>
+          </article>
+
+          <!-- 04 — Shows networking and concurrency skills in a fun format -->
+          <article class="project-card">
+            <span class="proj-num">04</span>
+            <h3>Multiplayer RPC Game</h3>
+            <p>Multiplayer game on an RPC architecture — real-time networking, game state synchronization, concurrent server logic.</p>
+            <div class="proj-tags">
+              <span class="proj-tag">Python</span>
+              <span class="proj-tag">RPC</span>
+              <span class="proj-tag">Networking</span>
+              <span class="proj-tag">Concurrency</span>
+            </div>
+          </article>
+
+          <!-- 05 — Classic backend project: database design, user management -->
+          <article class="project-card">
+            <span class="proj-num">05</span>
+            <h3>CRM System</h3>
+            <p>Custom CRM with relational database design, user management, and data workflows built with Python and MySQL.</p>
+            <div class="proj-tags">
+              <span class="proj-tag">Python</span>
+              <span class="proj-tag">MySQL</span>
+              <span class="proj-tag">FastAPI</span>
+              <span class="proj-tag">SQLAlchemy</span>
+            </div>
+          </article>
+
+          <!-- 06 — Hardware + firmware + competition. Rare skill combo. -->
+          <article class="project-card">
+            <span class="proj-num">06</span>
+            <h3>Sumo Robot</h3>
+            <p>Competition-grade sumo robot built from scratch — hardware design, chassis mechanics, firmware, and sensor logic tuned for competition rules.</p>
+            <div class="proj-tags">
+              <span class="proj-tag live">Competition</span>
+              <span class="proj-tag">Arduino / ESP32</span>
+              <span class="proj-tag">C++</span>
+              <span class="proj-tag">IR / Ultrasonic</span>
+            </div>
+          </article>
+
+          <!-- 07 — PID control + real-time debugging under pressure -->
+          <article class="project-card">
+            <span class="proj-num">07</span>
+            <h3>Line Follower</h3>
+            <p>Software built from scratch — PID controller, sensor calibration, real-time debugging via Serial Monitor.</p>
+            <div class="proj-tags">
+              <span class="proj-tag live">Competition</span>
+              <span class="proj-tag">C++</span>
+              <span class="proj-tag">PID</span>
+              <span class="proj-tag">Arduino</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!--
+      EDUCATION & MENTORSHIP
+      The 2-column layout puts the "3 courses" stat front and right,
+      so it catches the eye immediately. The three levels show progression.
+    -->
+    <section id="education">
+      <div class="container">
+        <span class="label">Education & Mentorship</span>
+        <h2>Teaching experience</h2>
+
+        <div class="edu-card">
+          <div>
+            <h3>Curriculum Designer & Instructor</h3>
+            <p class="edu-org">Robocode Schools Network</p>
+            <!-- Written as a story, not a bullet list — reads more naturally -->
+            <p class="edu-desc">
+              Independently designed three programming courses for children,
+              deployed across a national network of coding schools. Covered full
+              curriculum design — from learning objectives to hands-on exercises
+              — and delivered live instruction across all levels.
+            </p>
+            <!-- Three dots show the progression from beginner to advanced -->
+            <div class="edu-levels">
+              <div class="edu-level">Junior — introductory programming concepts</div>
+              <div class="edu-level">Middle — core algorithms & project work</div>
+              <div class="edu-level">Strong Middle — advanced patterns & real apps</div>
+            </div>
+          </div>
+
+          <!-- Big number in the corner — visually punchy, easy to remember -->
+          <div class="edu-stat">
+            <div class="stat-num">3</div>
+            <div class="stat-label">courses designed</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!--
+      ADDITIONAL SKILLS
+      The things that don't fit neatly into a tech stack but still matter.
+      Left-border items feel lighter than full cards — intentionally low-key.
+    -->
+    <section id="additional">
+      <div class="container">
+        <span class="label">Additional</span>
+        <h2>Beyond the code</h2>
+
+        <div class="additional-grid">
+          <!-- English matters for reading docs, Stack Overflow, and interviews -->
+          <div class="add-item">
+            <p class="add-title">English</p>
+            <p class="add-body">Technical documentation reading</p>
+          </div>
+          <!-- The ability to learn independently is what got all these skills in the first place -->
+          <div class="add-item">
+            <p class="add-title">Self-taught</p>
+            <p class="add-body">Strong independent learning habit</p>
+          </div>
+          <!-- Not a designer, but can open Figma and not be lost -->
+          <div class="add-item">
+            <p class="add-title">UI/UX</p>
+            <p class="add-body">Basic understanding, Figma</p>
+          </div>
+          <!-- Code review = can work in a team, give and receive feedback -->
+          <div class="add-item">
+            <p class="add-title">Code review</p>
+            <p class="add-body">Team collaboration & PRs</p>
+          </div>
+          <!-- Competition robots taught real-time iteration under real constraints -->
+          <div class="add-item">
+            <p class="add-title">Iterative dev</p>
+            <p class="add-body">Real-time debugging under competition constraints</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!--
+    FOOTER
+    Minimal — just the title and quick nav links back up the page.
+    Nothing else needed here.
+  -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <p>Software Developer — Portfolio</p>
+        <ul class="footer-links">
+          <li><a href="#hero">Top</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#education">Education</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
